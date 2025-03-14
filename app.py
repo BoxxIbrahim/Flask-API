@@ -1,13 +1,15 @@
-from flask import Flask, request, jsonify
+import os
+from flask import Flask
 
 app = Flask(__name__)
 
-@app.route('/generate', methods=['POST'])
-def generate():
-    data = request.get_json()  # This ensures Flask reads JSON data
-    if not data:
-        return jsonify({"error": "Invalid JSON data"}), 400
-    return jsonify({"message": "Success", "received": data})
+# Load variables from Railway
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'fallback-secret-key')
+TOKEN_EXPIRY = int(os.getenv('TOKEN_EXPIRY', 3600))
 
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000)  # Required for deployment
+@app.route("/")
+def home():
+    return "Flask API is running!"
+
+if __name__ == "__main__":
+    app.run()
